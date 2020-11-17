@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuestionsForum.Data;
 
 namespace QuestionsForum.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201117195525_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -301,31 +303,6 @@ namespace QuestionsForum.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("QuestionsForum.Models.Vote", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<short>("Assesment")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Votes");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -420,28 +397,9 @@ namespace QuestionsForum.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("QuestionsForum.Models.Vote", b =>
-                {
-                    b.HasOne("QuestionsForum.Models.Question", "Question")
-                        .WithMany("Votes")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuestionsForum.Models.User", "User")
-                        .WithMany("Votes")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("QuestionsForum.Models.Question", b =>
                 {
                     b.Navigation("Answers");
-
-                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("QuestionsForum.Models.User", b =>
@@ -449,8 +407,6 @@ namespace QuestionsForum.Migrations
                     b.Navigation("Answers");
 
                     b.Navigation("Questions");
-
-                    b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618
         }
