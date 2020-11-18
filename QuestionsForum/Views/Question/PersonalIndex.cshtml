@@ -1,0 +1,63 @@
+﻿@model QuestionsForum.Models.Question
+@{ 
+    int upvotes = Model.Votes.Where(v => v.Assesment == 1).ToList().Count;
+    int downvotes = Model.Votes.Count - upvotes;
+    int rating = upvotes - downvotes;
+}
+
+    <div class="text-center">
+        <div class="card mb-3">
+            <div class="card-header">Question: @Model.Name . Rating: @rating </div>
+            <div class="card-body">
+                    <p class="card-text">Description of the problem: @Model.Description</p>
+                    <hr />
+                    <p class="card-text">
+                        Tags:
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <span>@tag.Name, </span>
+                        }
+                    </p>
+            </div>
+            <div class="card-footer">
+                <div class="text-center">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        
+                        <a class="btn btn-success" onclick="Vote(true, 1)">@upvotes Upvote</a>
+                        <a class="btn btn-danger" onclick="Vote(true, -1)">@downvotes Downvote</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-success" onclick="Vote(false, 1)">@upvotes Upvote</a>
+                        <a class="btn btn-danger" onclick="Vote(false, -1)">@downvotes Downvote</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts{
+    <script>
+        function Vote(isAuthenticated, assesment) {
+            if (!isAuthenticated) {
+                alert("Persmission denied. Log in to vote for the question.");
+                return;
+            }
+
+            $.ajax({
+                url: "/Vote",
+                type: "POST",
+                data: { assesment, questionId: @Model.Id },
+                success: function (data) {
+                    if (!data.success) {
+                        data.message ? alert(data.message) : alert("Something went wrong.");
+                        return;
+                    }
+
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+ }

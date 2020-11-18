@@ -32,6 +32,21 @@ namespace QuestionsForum.Controllers
             return View(questions);
         }
 
+        public async Task<IActionResult> PersonalIndex(int id)
+        {
+            var question = await _db.Questions
+                .Include(q => q.Tags)
+                .Include(q => q.Votes)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            if(question == null)
+            {
+                return NotFound();
+            }
+
+            return View(question);
+        }
+
         [Authorize]
         [HttpGet]
         public IActionResult Ask()
