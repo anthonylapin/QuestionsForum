@@ -64,7 +64,7 @@ namespace QuestionsForum.Controllers
 
                 await _db.SaveChangesAsync();
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index));
             }
 
             return View(questionModel);
@@ -128,6 +128,28 @@ namespace QuestionsForum.Controllers
 
             return View(questionVM);
         }
+
+
+        #region API_CALLS
+
+        [Authorize]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var question = await _db.Questions.FirstOrDefaultAsync(q => q.Id == id);
+
+            if(question == null)
+            {
+                return Json(new { success = false, message = "No such question in db" });
+            }
+
+            _db.Questions.Remove(question);
+            await _db.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Message was deleted" });
+        }
+
+        #endregion
 
         private List<string> getInsertedTagsArray(string str)
         {

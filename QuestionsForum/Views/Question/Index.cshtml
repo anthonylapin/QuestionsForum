@@ -32,7 +32,7 @@ else
                         <a class="btn btn-info m-2" asp-action="Update" asp-controller="Question" asp-route-id="@question.Id">
                             Update
                         </a>
-                        <a href="#" class="btn btn-danger m-2">
+                        <a onclick="Delete(@question.Id)" class="btn btn-danger m-2">
                             Delete
                         </a>
                     </td>
@@ -45,21 +45,18 @@ else
 
 
 @section Scripts{
-    @*<script>
-            function Delete(url) {
-                $.ajax({
-                    type: "DELETE",
-                    url: url,
-                    success: function (data) {
-                        if (data.success) {
-                            alert(data.message);
-                            window.location.reload();
-                        }
-                        else {
-                            alert(data.message);
-                        }
+    <script>
+        function Delete(id) {
+            $.ajax({
+                url: `/Question/Delete/${id}`,
+                type: "DELETE",
+                success: function (data) {
+                    alert(data.message);
+                    if (data.success) {
+                        window.location.reload();
                     }
-                });
+                }
+            });
             }
-        </script>*@
+    </script>
 }
