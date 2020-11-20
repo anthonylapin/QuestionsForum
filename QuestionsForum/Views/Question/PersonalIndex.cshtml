@@ -37,6 +37,27 @@
         </div>
     </div>
 
+<div class="mt-4">
+    <h4>Answer question</h4>
+    <div class="form-group">
+        <input type="text" id="answerText" class="form-control" />
+    </div>
+    <button onclick="Answer()" type="submit" class="btn btn-primary">Answer</button>
+</div> 
+
+<div class="mt-4">
+    @foreach (var answer in Model.Answers)
+    {
+        <div class="card mt-2">
+            <div class="card-body">
+                <h5 class="card-title">@answer.User.UserName</h5>
+                <p class="card-text">@answer.Description</p>
+            </div>
+        </div>
+    }
+</div>
+
+
 @section Scripts{
     <script>
         function Vote(isAuthenticated, assesment) {
@@ -59,5 +80,29 @@
                 }
             });
         }
+
+        function Answer() {
+            let answer = document.getElementById("answerText").value;
+
+            if (!answer) {
+                alert("Answer must be non empty!");
+                return;
+            }
+
+            $.ajax({
+                url: "/Answer",
+                type: "POST",
+                data: { description: answer, questionId: @Model.Id },
+                success: function (data) {
+                    if (!data.success) {
+                        alert(data.message);
+                        return;
+                    }
+
+                    window.location.reload();
+                }
+            });
+        }
+
     </script>
  }

@@ -37,7 +37,15 @@ namespace QuestionsForum.Controllers
             var question = await _db.Questions
                 .Include(q => q.Tags)
                 .Include(q => q.Votes)
+                .Include(q => q.Answers)
                 .FirstOrDefaultAsync(q => q.Id == id);
+
+            var allUsers = await _userManager.Users.ToListAsync();
+
+            question.Answers.ForEach(a =>
+            {
+                a.User = allUsers.Find(u => u.Id == a.UserId);
+            });
 
             if(question == null)
             {
